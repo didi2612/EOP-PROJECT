@@ -1,6 +1,6 @@
 # EOP-PROJECT
-<img src="https://i.ibb.co/Bwc2hbT/latest-logo-no-background.png" alt="LOGO AZMI PRODUCTIONS" width="200"/><img src="https://seeklogo.com/images/I/international-islamic-university-malaysia-logo-221DAA8603-seeklogo.com.png" alt="LOGO IIUM" width="200"/><br>
-this repository made by Azmi(2211387) for haikal and Ubaid for sharing and updating our project code of details below :
+<img src="https://i.ibb.co/Bwc2hbT/latest-logo-no-background.png" alt="LOGO AZMI PRODUCTIONS" width="200"/><img src="https://seeklogo.com/images/I/international-islamic-university-malaysia-logo-221DAA8603-seeklogo.com.png" alt="LOGO IIUM" width="200"/><br><br><br>
+This repository made by Azmi(2211387) for haikal and Ubaid for sharing and updating our project code of details below :
 
 I update fuel price using API from https://api.data.gov.my/data-catalogue/?id=fuelprice&limit=1 
 
