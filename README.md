@@ -1,5 +1,6 @@
 # EOP-PROJECT
-this repository made by Azmi for haikal and Ubaid for sharing and updating our project code of details below :
+![Azmi Productions]([https://example.com/image.png](https://i.ibb.co/Bwc2hbT/latest-logo-no-background.png))
+this repository made by Azmi(2211387) for haikal and Ubaid for sharing and updating our project code of details below :
 
 I update fuel price using API from https://api.data.gov.my/data-catalogue/?id=fuelprice&limit=1 
 
@@ -9,6 +10,9 @@ https://docs.oracle.com/javase/8/docs/api/java/util/logging/Handler.html <br>
 https://docs.oracle.com/javase/8/docs/api/org/xml/sax/Parser.html <br>
 
 
+<br>
+MADE POSSIBLE BY AZMI PRODUCTIONS
+<br>
 
 
 
