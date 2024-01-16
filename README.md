@@ -1,6 +1,18 @@
 # EOP-PROJECT
 this repository made by Azmi for haikal and Ubaid for sharing and updating our project code of details below :
 
+I update fuel price using API from https://api.data.gov.my/data-catalogue/?id=fuelprice&limit=1 
+
+references :
+https://developer.data.gov.my/static-api/opendosm
+https://docs.oracle.com/javase/8/docs/api/java/util/logging/Handler.html
+https://docs.oracle.com/javase/8/docs/api/org/xml/sax/Parser.html
+
+
+
+
+
+
  # Petrol Station System
 
 This is a Java program that simulates a petrol station with multiple dispensers. It allows users to purchase fuel, fill up dispensers, and view petrol levels. The program also fetches real-time fuel prices from an external API.
