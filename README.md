@@ -1,5 +1,5 @@
 # EOP-PROJECT
-![Logo IIUM](https://example.com/image.png](https://i.ibb.co/Bwc2hbT/latest-logo-no-background.png) <br>
+![Logo AZMI PRODUCTIONS](https://i.ibb.co/Bwc2hbT/latest-logo-no-background.png) ![Logo AZMI PRODUCTIONS](logoiium.svg)<br>
 this repository made by Azmi(2211387) for haikal and Ubaid for sharing and updating our project code of details below :
 
 I update fuel price using API from https://api.data.gov.my/data-catalogue/?id=fuelprice&limit=1 
