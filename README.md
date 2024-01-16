@@ -4,9 +4,9 @@ this repository made by Azmi for haikal and Ubaid for sharing and updating our p
 I update fuel price using API from https://api.data.gov.my/data-catalogue/?id=fuelprice&limit=1 
 
 references :
-https://developer.data.gov.my/static-api/opendosm
-https://docs.oracle.com/javase/8/docs/api/java/util/logging/Handler.html
-https://docs.oracle.com/javase/8/docs/api/org/xml/sax/Parser.html
+https://developer.data.gov.my/static-api/opendosm <br>
+https://docs.oracle.com/javase/8/docs/api/java/util/logging/Handler.html <br>
+https://docs.oracle.com/javase/8/docs/api/org/xml/sax/Parser.html <br>
 
 
 
