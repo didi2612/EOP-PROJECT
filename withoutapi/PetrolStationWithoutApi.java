@@ -6,15 +6,18 @@ import java.util.Scanner;
 
 public class PetrolStationWithoutApi {
     private double[][] fuelAndPetrol; // 2D array to store both fuel prices and petrol levels
+    private double[] fuelPrices; // 1D array to store fuel prices
     private final double MIN_PETROL_LEVEL = 0.1;
     private int receiptNumber = 1;
 
     public PetrolStationWithoutApi(int numDispensers) {
         fuelAndPetrol = new double[numDispensers][2];
+        fuelPrices = new double[numDispensers]; // Initialize the 1D array for fuel prices
+
         // Initialize fuel prices manually for the version without API
-        fuelAndPetrol[0][0] = 2.03;
-        fuelAndPetrol[1][0] = 2.28;
-        fuelAndPetrol[2][0] = 1.99;
+        fuelPrices[0] = 2.05; // RON95
+        fuelPrices[1] = 3.47; // RON97
+        fuelPrices[2] = 2.15; // Diesel
 
         for (int i = 0; i < numDispensers; i++) {
             fuelAndPetrol[i][1] = 100.0; // Initialize petrol levels
@@ -65,11 +68,11 @@ public class PetrolStationWithoutApi {
     private double getFuelPrice(String fuelType) {
         switch (fuelType.toLowerCase()) {
             case "ron95":
-                return fuelAndPetrol[0][0];
+                return fuelPrices[0];
             case "ron97":
-                return fuelAndPetrol[1][0];
+                return fuelPrices[1];
             case "diesel":
-                return fuelAndPetrol[2][0];
+                return fuelPrices[2];
             default:
                 throw new IllegalArgumentException("Invalid fuel type: " + fuelType);
         }

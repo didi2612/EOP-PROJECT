@@ -1,29 +1,27 @@
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.net.*;
 import java.util.Scanner;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+
 
 public class PetrolStation {
     private double[][] fuelAndPetrol; // 2D array to store both fuel prices and petrol levels
-    private final double MIN_PETROL_LEVEL = 0.1;
+    private String[] dispenserNames; // 1D array to store dispenser names
+    private final double MIN_PETROL_LEVEL = 20.0;
     private int receiptNumber = 1;
 
     // Constructor for the version without API
     public PetrolStation(int numDispensers, boolean useApi) {
         if (useApi) {
             fuelAndPetrol = new double[numDispensers][2];
+            dispenserNames = new String[]{"Dispenser A", "Dispenser B", "Dispenser C"};
             updateFuelPrices();
         } else {
             fuelAndPetrol = new double[numDispensers][2];
+            dispenserNames = new String[]{"Dispenser 1", "Dispenser 2", "Dispenser 3"};
             // Initialize fuel prices manually for the version without API
-            fuelAndPetrol[0][0] = 2.03;
-            fuelAndPetrol[1][0] = 2.28;
-            fuelAndPetrol[2][0] = 1.99;
+            fuelAndPetrol[0][0] = 2.05;
+            fuelAndPetrol[1][0] = 3.47;
+            fuelAndPetrol[2][0] = 2.15;
         }
 
         for (int i = 0; i < numDispensers; i++) {
@@ -39,14 +37,14 @@ public class PetrolStation {
         }
 
         if (fuelAndPetrol[dispenser][1] < MIN_PETROL_LEVEL) {
-            System.out.println("Warning: Low petrol level at dispenser " + dispenser + ". Please top up more fuel.");
+            System.out.println("Warning: Low petrol level at " + dispenserNames[dispenser] + ". Please top up more fuel.");
         } else {
             double fuelPrice = getFuelPrice(fuelType);
 
             if (fuelPrice > 0) {
                 double litres = amount / fuelPrice;
                 if (litres > fuelAndPetrol[dispenser][1]) {
-                    System.out.println("Error: Not enough petrol in dispenser " + dispenser + ". Topping up the fuel.");
+                    System.out.println("Error: Not enough petrol in " + dispenserNames[dispenser] + ". Topping up the fuel.");
                     fillUpDispenser(dispenser);
                     return;
                 }
@@ -55,7 +53,7 @@ public class PetrolStation {
 
                 printReceipt(receiptNumber++, dispenser, litres, fuelType, totalPrice);
 
-                System.out.printf("Filling up %.2f litres of %s at dispenser %d. Total price: RM%.2f\n", litres, fuelType, dispenser, totalPrice);
+                System.out.printf("Filling up %.2f litres of %s at %s. Total price: RM%.2f\n", litres, fuelType, dispenserNames[dispenser], totalPrice);
             } else {
                 System.out.println("Error: Invalid fuel price. Please try again.");
             }
@@ -225,7 +223,7 @@ public class PetrolStation {
             System.out.println("Using manually initialized fuel prices.\n");
         } else {
             System.out.println("Invalid choice. Exiting program.");
-            return;
+            return; //check this part, resource may be leak. Produce solution but it working
         }
 
         PetrolStation station = new PetrolStation(3, useApi);
@@ -242,8 +240,10 @@ public class PetrolStation {
                 continue;
             }
 
+            System.out.println("Dispenser Name: " + station.dispenserNames[dispenser]);
+
             if (station.fuelAndPetrol[dispenser][1] < 20.0) {
-                System.out.println("Dispenser " + dispenser + " needs to be filled up. Do you want to fill it up? (yes/no):");
+                System.out.println(station.dispenserNames[dispenser] + " needs to be filled up. Do you want to fill it up? (yes/no):");
                 String fillUpChoice = scanner.next().toLowerCase();
                 if (fillUpChoice.equals("yes")) {
                     station.fillUpDispenser(dispenser);

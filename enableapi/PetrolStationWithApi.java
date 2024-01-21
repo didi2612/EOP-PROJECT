@@ -1,4 +1,4 @@
-package apienable;
+package enableapi;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,57 +11,60 @@ import java.net.URL;
 
 public class PetrolStationWithApi {
     private double[][] fuelAndPetrol; // 2D array to store both fuel prices and petrol levels
+    private String[] dispenserNames;   // 1D array to store dispenser names
     private final double MIN_PETROL_LEVEL = 0.1;
     private int receiptNumber = 1;
 
-    public PetrolStationWithApi(int numDispensers) {
+    public PetrolStationWithApi(String[] names) {
+        int numDispensers = names.length;
         fuelAndPetrol = new double[numDispensers][2]; // Each dispenser has fuel price and petrol level
+        dispenserNames = names;
         updateFuelPrices();
         for (int i = 0; i < numDispensers; i++) {
             fuelAndPetrol[i][1] = 100.0; // Initialize petrol levels
         }
     }
 
-    public void purchaseFuel(int dispenser, double amount, String fuelType) {
+    public void purchaseFuel(int dispenserIndex, double amount, String fuelType) {
         updateFuelPrices();
-        if (dispenser < 0 || dispenser >= fuelAndPetrol.length) {
+        if (dispenserIndex < 0 || dispenserIndex >= fuelAndPetrol.length) {
             System.out.println("Invalid dispenser. Please try again.");
             return;
         }
 
-        if (fuelAndPetrol[dispenser][1] < MIN_PETROL_LEVEL) {
-            System.out.println("Warning: Low petrol level at dispenser " + dispenser + ". Please top up more fuel.");
+        if (fuelAndPetrol[dispenserIndex][1] < MIN_PETROL_LEVEL) {
+            System.out.println("Warning: Low petrol level at dispenser " + dispenserNames[dispenserIndex] + ". Please top up more fuel.");
         } else {
             double fuelPrice = getFuelPrice(fuelType);
 
             if (fuelPrice > 0) {
                 double litres = amount / fuelPrice;
-                if (litres > fuelAndPetrol[dispenser][1]) {
-                    System.out.println("Error: Not enough petrol in dispenser " + dispenser + ". Please top up more fuel.");
+                if (litres > fuelAndPetrol[dispenserIndex][1]) {
+                    System.out.println("Error: Not enough petrol in dispenser " + dispenserNames[dispenserIndex] + ". Please top up more fuel.");
                     return;
                 }
-                fuelAndPetrol[dispenser][1] -= litres;
+                fuelAndPetrol[dispenserIndex][1] -= litres;
                 double totalPrice = litres * fuelPrice;
 
-                printReceipt(receiptNumber++, dispenser, litres, fuelType, totalPrice);
+                printReceipt(receiptNumber++, dispenserNames[dispenserIndex], litres, fuelType, totalPrice);
 
-                System.out.printf("Filling up %.2f litres of %s at dispenser %d. Total price: RM%.2f\n", litres, fuelType, dispenser, totalPrice);
+                System.out.printf("Filling up %.2f litres of %s at dispenser %s. Total price: RM%.2f\n", litres, fuelType, dispenserNames[dispenserIndex], totalPrice);
             } else {
                 System.out.println("Error: Invalid fuel price. Please try again.");
             }
         }
     }
 
-    public void fillUpDispenser(int dispenser) {
-        if (dispenser < 0 || dispenser >= fuelAndPetrol.length) {
+    public void fillUpDispenser(int dispenserIndex) {
+        if (dispenserIndex < 0 || dispenserIndex >= fuelAndPetrol.length) {
             System.out.println("Invalid dispenser. Please try again.");
             return;
         }
 
-        double fillAmount = 100.0 - fuelAndPetrol[dispenser][1];
-        fuelAndPetrol[dispenser][1] = 100.0;
+        double fillAmount = 100.0 - fuelAndPetrol[dispenserIndex][1];
+        fuelAndPetrol[dispenserIndex][1] = 100.0;
 
-        System.out.printf("Dispenser %d filled up with %.2f litres.\n", dispenser, fillAmount);
+        System.out.printf("Dispenser %s filled up with %.2f litres.\n", dispenserNames[dispenserIndex], fillAmount);
     }
 
     private double getFuelPrice(String fuelType) {
@@ -77,9 +80,8 @@ public class PetrolStationWithApi {
         }
     }
 
-    private void printReceipt(int currentReceiptNumber, int dispenser, double litres, String fuelType, double totalPrice) {
+    private void printReceipt(int currentReceiptNumber, String dispenserName, double litres, String fuelType, double totalPrice) {
         try {
-
             String folderName = "azmi,haikal,ubaid-receipt";
             File folder = new File(folderName);
             if (!folder.exists()) {
@@ -90,7 +92,7 @@ public class PetrolStationWithApi {
 
             try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
                 writer.println("Receipt Number: " + currentReceiptNumber);
-                writer.println("Dispenser: " + dispenser);
+                writer.println("Dispenser: " + dispenserName);
                 writer.println("Fuel Type: " + fuelType);
                 writer.println("Litres: " + String.format("%.2f", litres));
                 writer.println("Total Price: RM" + String.format("%.2f", totalPrice));
@@ -104,7 +106,7 @@ public class PetrolStationWithApi {
 
     public void displayPetrolLevels() {
         for (int i = 0; i < fuelAndPetrol.length; i++) {
-            System.out.printf("Petrol level at dispenser %d: %.2f litres\n", i, fuelAndPetrol[i][1]);
+            System.out.printf("Petrol level at dispenser %s: %.2f litres\n", dispenserNames[i], fuelAndPetrol[i][1]);
         }
     }
 
@@ -202,26 +204,27 @@ public class PetrolStationWithApi {
         }
         System.out.println("\nFetched!\n");
 
-        PetrolStationWithApi station = new PetrolStationWithApi(3);
+        String[] dispenserNames = {"Dispenser1", "Dispenser2", "Dispenser3"}; // Customize dispenser names
+        PetrolStationWithApi station = new PetrolStationWithApi(dispenserNames);
         Scanner scanner = new Scanner(System.in);
         boolean exit = false;
 
         while (!exit) {
             System.out.println("Choose a dispenser (0-2) or -1 to exit:");
-            int dispenser = scanner.nextInt();
-            if (dispenser == -1) {
+            int dispenserIndex = scanner.nextInt();
+            if (dispenserIndex == -1) {
                 exit = true;
                 break;
-            } else if (dispenser < 0 || dispenser >= station.fuelAndPetrol.length) {
+            } else if (dispenserIndex < 0 || dispenserIndex >= station.fuelAndPetrol.length) {
                 System.out.println("Invalid dispenser. Please try again.");
                 continue;
             }
 
-            if (station.fuelAndPetrol[dispenser][1] < 20.0) {
-                System.out.println("Dispenser " + dispenser + " needs to be filled up. Do you want to fill it up? (yes/no):");
+            if (station.fuelAndPetrol[dispenserIndex][1] < 20.0) {
+                System.out.println("Dispenser " + dispenserNames[dispenserIndex] + " needs to be filled up. Do you want to fill it up? (yes/no):");
                 String fillUpChoice = scanner.next().toLowerCase();
                 if (fillUpChoice.equals("yes")) {
-                    station.fillUpDispenser(dispenser);
+                    station.fillUpDispenser(dispenserIndex);
                     continue;
                 } else {
                     System.out.println("Choose a fuel type (ron95, ron97, diesel):");
@@ -232,7 +235,7 @@ public class PetrolStationWithApi {
                     }
                     System.out.println("Enter the amount of money to purchase fuel (in RM):");
                     double amount = scanner.nextDouble();
-                    station.purchaseFuel(dispenser, amount, fuelType);
+                    station.purchaseFuel(dispenserIndex, amount, fuelType);
                     station.displayPetrolLevels();
                 }
             } else {
@@ -244,7 +247,7 @@ public class PetrolStationWithApi {
                 }
                 System.out.println("Enter the amount of money to purchase fuel (in RM):");
                 double amount = scanner.nextDouble();
-                station.purchaseFuel(dispenser, amount, fuelType);
+                station.purchaseFuel(dispenserIndex, amount, fuelType);
                 station.displayPetrolLevels();
             }
         }
