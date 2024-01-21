@@ -13,9 +13,19 @@ public class PetrolStation {
     private final double MIN_PETROL_LEVEL = 0.1;
     private int receiptNumber = 1;
 
-    public PetrolStation(int numDispensers) {
-        fuelAndPetrol = new double[numDispensers][2]; // Each dispenser has fuel price and petrol level
-        updateFuelPrices();
+    // Constructor for the version without API
+    public PetrolStation(int numDispensers, boolean useApi) {
+        if (useApi) {
+            fuelAndPetrol = new double[numDispensers][2];
+            updateFuelPrices();
+        } else {
+            fuelAndPetrol = new double[numDispensers][2];
+            // Initialize fuel prices manually for the version without API
+            fuelAndPetrol[0][0] = 2.03;
+            fuelAndPetrol[1][0] = 2.28;
+            fuelAndPetrol[2][0] = 1.99;
+        }
+
         for (int i = 0; i < numDispensers; i++) {
             fuelAndPetrol[i][1] = 100.0; // Initialize petrol levels
         }
@@ -36,7 +46,8 @@ public class PetrolStation {
             if (fuelPrice > 0) {
                 double litres = amount / fuelPrice;
                 if (litres > fuelAndPetrol[dispenser][1]) {
-                    System.out.println("Error: Not enough petrol in dispenser " + dispenser + ". Please top up more fuel.");
+                    System.out.println("Error: Not enough petrol in dispenser " + dispenser + ". Topping up the fuel.");
+                    fillUpDispenser(dispenser);
                     return;
                 }
                 fuelAndPetrol[dispenser][1] -= litres;
@@ -190,19 +201,34 @@ public class PetrolStation {
 
     public static void main(String[] args) {
         System.out.println("==== ++ azmi / haikal / ubaid petrol station system ++ ====");
-        System.out.println("Fetching fuel prices from https://api.data.gov.my/");
-        for (int i = 0; i < 10; i++) {
-            try {
-                Thread.sleep(500);
-                System.out.print(".");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println("\nFetched!\n");
-
-        PetrolStation station = new PetrolStation(3);
         Scanner scanner = new Scanner(System.in);
+
+        // Choose between using API or not
+        System.out.println("Choose the version (1: with API, 2: without API):");
+        int versionChoice = scanner.nextInt();
+
+        boolean useApi;
+        if (versionChoice == 1) {
+            useApi = true;
+            System.out.println("Fetching fuel prices from https://api.data.gov.my/");
+            for (int i = 0; i < 10; i++) {
+                try {
+                    Thread.sleep(500);
+                    System.out.print(".");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println("\nFetched!\n");
+        } else if (versionChoice == 2) {
+            useApi = false;
+            System.out.println("Using manually initialized fuel prices.\n");
+        } else {
+            System.out.println("Invalid choice. Exiting program.");
+            return;
+        }
+
+        PetrolStation station = new PetrolStation(3, useApi);
         boolean exit = false;
 
         while (!exit) {
