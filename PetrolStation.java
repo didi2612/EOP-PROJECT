@@ -9,39 +9,37 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class PetrolStation {
-    private double[] petrolLevels;
-    private double[] fuelPrices;
+    private double[][] fuelAndPetrol; // 2D array to store both fuel prices and petrol levels
     private final double MIN_PETROL_LEVEL = 0.1;
     private int receiptNumber = 1;
 
     public PetrolStation(int numDispensers) {
-        petrolLevels = new double[numDispensers];
-        fuelPrices = new double[numDispensers];
+        fuelAndPetrol = new double[numDispensers][2]; // Each dispenser has fuel price and petrol level
         updateFuelPrices();
         for (int i = 0; i < numDispensers; i++) {
-            petrolLevels[i] = 100.0;
+            fuelAndPetrol[i][1] = 100.0; // Initialize petrol levels
         }
     }
 
     public void purchaseFuel(int dispenser, double amount, String fuelType) {
         updateFuelPrices();
-        if (dispenser < 0 || dispenser >= petrolLevels.length) {
+        if (dispenser < 0 || dispenser >= fuelAndPetrol.length) {
             System.out.println("Invalid dispenser. Please try again.");
             return;
         }
 
-        if (petrolLevels[dispenser] < MIN_PETROL_LEVEL) {
+        if (fuelAndPetrol[dispenser][1] < MIN_PETROL_LEVEL) {
             System.out.println("Warning: Low petrol level at dispenser " + dispenser + ". Please top up more fuel.");
         } else {
             double fuelPrice = getFuelPrice(fuelType);
 
             if (fuelPrice > 0) {
                 double litres = amount / fuelPrice;
-                if (litres > petrolLevels[dispenser]) {
+                if (litres > fuelAndPetrol[dispenser][1]) {
                     System.out.println("Error: Not enough petrol in dispenser " + dispenser + ". Please top up more fuel.");
                     return;
                 }
-                petrolLevels[dispenser] -= litres;
+                fuelAndPetrol[dispenser][1] -= litres;
                 double totalPrice = litres * fuelPrice;
 
                 printReceipt(receiptNumber++, dispenser, litres, fuelType, totalPrice);
@@ -54,13 +52,13 @@ public class PetrolStation {
     }
 
     public void fillUpDispenser(int dispenser) {
-        if (dispenser < 0 || dispenser >= petrolLevels.length) {
+        if (dispenser < 0 || dispenser >= fuelAndPetrol.length) {
             System.out.println("Invalid dispenser. Please try again.");
             return;
         }
 
-        double fillAmount = 100.0 - petrolLevels[dispenser];
-        petrolLevels[dispenser] = 100.0;
+        double fillAmount = 100.0 - fuelAndPetrol[dispenser][1];
+        fuelAndPetrol[dispenser][1] = 100.0;
 
         System.out.printf("Dispenser %d filled up with %.2f litres.\n", dispenser, fillAmount);
     }
@@ -68,11 +66,11 @@ public class PetrolStation {
     private double getFuelPrice(String fuelType) {
         switch (fuelType.toLowerCase()) {
             case "ron95":
-                return fuelPrices[0];
+                return fuelAndPetrol[0][0];
             case "ron97":
-                return fuelPrices[1];
+                return fuelAndPetrol[1][0];
             case "diesel":
-                return fuelPrices[2];
+                return fuelAndPetrol[2][0];
             default:
                 throw new IllegalArgumentException("Invalid fuel type: " + fuelType);
         }
@@ -104,8 +102,8 @@ public class PetrolStation {
     }
 
     public void displayPetrolLevels() {
-        for (int i = 0; i < petrolLevels.length; i++) {
-            System.out.printf("Petrol level at dispenser %d: %.2f litres\n", i, petrolLevels[i]);
+        for (int i = 0; i < fuelAndPetrol.length; i++) {
+            System.out.printf("Petrol level at dispenser %d: %.2f litres\n", i, fuelAndPetrol[i][1]);
         }
     }
 
@@ -114,7 +112,7 @@ public class PetrolStation {
             URL url = new URL("https://api.data.gov.my/data-catalogue/?id=fuelprice&limit=1");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-    
+
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -124,43 +122,41 @@ public class PetrolStation {
                     response.append(line);
                 }
                 reader.close();
-    
+
                 // Parse JSON response and update fuel prices
-                fuelPrices[0] = parseFuelPriceFromJson(response.toString(), "ron95");
-                fuelPrices[1] = parseFuelPriceFromJson(response.toString(), "ron97");
-                fuelPrices[2] = parseFuelPriceFromJson(response.toString(), "diesel");
-    
-                
-                System.out.println("RON95 Price: RM" + fuelPrices[0]);
-                System.out.println("RON97 Price: RM" + fuelPrices[1]);
-                System.out.println("Diesel Price: RM" + fuelPrices[2]);
-    
+                fuelAndPetrol[0][0] = parseFuelPriceFromJson(response.toString(), "ron95");
+                fuelAndPetrol[1][0] = parseFuelPriceFromJson(response.toString(), "ron97");
+                fuelAndPetrol[2][0] = parseFuelPriceFromJson(response.toString(), "diesel");
+
+                System.out.println("RON95 Price: RM" + fuelAndPetrol[0][0]);
+                System.out.println("RON97 Price: RM" + fuelAndPetrol[1][0]);
+                System.out.println("Diesel Price: RM" + fuelAndPetrol[2][0]);
+
             } else {
                 System.out.println("Failed to get fuel prices. HTTP response code: " + responseCode);
-                
-                fuelPrices[0] = 2.03; 
-                fuelPrices[1] = 2.28; 
-                fuelPrices[2] = 1.99; 
+
+                fuelAndPetrol[0][0] = 2.03;
+                fuelAndPetrol[1][0] = 2.28;
+                fuelAndPetrol[2][0] = 1.99;
                 System.out.println("Using latest updated price 2017:");
-                System.out.println("RON95 Price: RM" + fuelPrices[0]);
-                System.out.println("RON97 Price: RM" + fuelPrices[1]);
-                System.out.println("Diesel Price: RM" + fuelPrices[2]);
+                System.out.println("RON95 Price: RM" + fuelAndPetrol[0][0]);
+                System.out.println("RON97 Price: RM" + fuelAndPetrol[1][0]);
+                System.out.println("Diesel Price: RM" + fuelAndPetrol[2][0]);
             }
-    
+
             connection.disconnect();
         } catch (IOException e) {
             System.out.println("Error updating fuel prices: " + e.getMessage());
-            
-            fuelPrices[0] = 2.03; 
-            fuelPrices[1] = 2.28; 
-            fuelPrices[2] = 1.99; 
+
+            fuelAndPetrol[0][0] = 2.03;
+            fuelAndPetrol[1][0] = 2.28;
+            fuelAndPetrol[2][0] = 1.99;
             System.out.println("Using latest updated price 2017:");
-            System.out.println("RON95 Price: RM" + fuelPrices[0]);
-            System.out.println("RON97 Price: RM" + fuelPrices[1]);
-            System.out.println("Diesel Price: RM" + fuelPrices[2]);
+            System.out.println("RON95 Price: RM" + fuelAndPetrol[0][0]);
+            System.out.println("RON97 Price: RM" + fuelAndPetrol[1][0]);
+            System.out.println("Diesel Price: RM" + fuelAndPetrol[2][0]);
         }
     }
-    
 
     private double parseFuelPriceFromJson(String jsonResponse, String fuelType) {
         double fuelPrice = -1; // Default value if not found
@@ -179,7 +175,7 @@ public class PetrolStation {
                     String key = entry[0].trim();
                     String value = entry[1].trim();
 
-                    
+
                     if (("\"" + fuelType + "\"").equals(key)) {
                         fuelPrice = Double.parseDouble(value);
                         break;
@@ -197,8 +193,8 @@ public class PetrolStation {
         System.out.println("Fetching fuel prices from https://api.data.gov.my/");
         for (int i = 0; i < 10; i++) {
             try {
-                Thread.sleep(500); 
-                System.out.print("."); 
+                Thread.sleep(500);
+                System.out.print(".");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -207,15 +203,20 @@ public class PetrolStation {
 
         PetrolStation station = new PetrolStation(3);
         Scanner scanner = new Scanner(System.in);
-        while (true) {
-            System.out.println("Choose a dispenser (0-2):");
+        boolean exit = false;
+
+        while (!exit) {
+            System.out.println("Choose a dispenser (0-2) or -1 to exit:");
             int dispenser = scanner.nextInt();
-            if (dispenser < 0 || dispenser >= station.petrolLevels.length) {
+            if (dispenser == -1) {
+                exit = true;
+                break;
+            } else if (dispenser < 0 || dispenser >= station.fuelAndPetrol.length) {
                 System.out.println("Invalid dispenser. Please try again.");
                 continue;
             }
 
-            if (station.petrolLevels[dispenser] < 20.0) {
+            if (station.fuelAndPetrol[dispenser][1] < 20.0) {
                 System.out.println("Dispenser " + dispenser + " needs to be filled up. Do you want to fill it up? (yes/no):");
                 String fillUpChoice = scanner.next().toLowerCase();
                 if (fillUpChoice.equals("yes")) {
@@ -245,9 +246,7 @@ public class PetrolStation {
                 station.purchaseFuel(dispenser, amount, fuelType);
                 station.displayPetrolLevels();
             }
-            break;
         }
         scanner.close();
     }
-    
 }
