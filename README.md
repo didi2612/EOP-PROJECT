@@ -5,6 +5,7 @@ This repository made by Azmi(2211387) for haikal and Ubaid for sharing and updat
 I update fuel price using API from https://api.data.gov.my/data-catalogue/?id=fuelprice&limit=1 
 
 references : <br>
+https://ringgitplus.com/en/blog/petrol-credit-card/petrol-price-malaysia-live-updates-ron95-ron97-diesel.html <br>
 https://developer.data.gov.my/static-api/opendosm <br>
 https://docs.oracle.com/javase/8/docs/api/java/util/logging/Handler.html <br>
 https://docs.oracle.com/javase/8/docs/api/org/xml/sax/Parser.html <br>
