@@ -28,7 +28,7 @@ public class PetrolStation {
             fuelAndPetrol[i][1] = 100.0; // Initialize petrol levels
         }
     }
-
+    // methods in purchasing the fuel
     public void purchaseFuel(int dispenser, double amount, String fuelType) {
         updateFuelPrices();
         if (dispenser < 0 || dispenser >= fuelAndPetrol.length) {
@@ -59,7 +59,7 @@ public class PetrolStation {
             }
         }
     }
-
+    // filling up the dispenser methods
     public void fillUpDispenser(int dispenser) {
         if (dispenser < 0 || dispenser >= fuelAndPetrol.length) {
             System.out.println("Invalid dispenser. Please try again.");
@@ -84,7 +84,7 @@ public class PetrolStation {
                 throw new IllegalArgumentException("Invalid fuel type: " + fuelType);
         }
     }
-
+    // receipt printing
     private void printReceipt(int currentReceiptNumber, int dispenser, double litres, String fuelType, double totalPrice) {
         try {
 
@@ -109,13 +109,13 @@ public class PetrolStation {
             System.out.println("Error saving receipt: " + e.getMessage());
         }
     }
-
+    // displaying the petrol level in dispenser
     public void displayPetrolLevels() {
         for (int i = 0; i < fuelAndPetrol.length; i++) {
             System.out.printf("Petrol level at dispenser %d: %.2f litres\n", i, fuelAndPetrol[i][1]);
         }
     }
-
+    // updating the fuel price
     private void updateFuelPrices() {
         try {
             URL url = new URL("https://api.data.gov.my/data-catalogue/?id=fuelprice&limit=1");
@@ -166,7 +166,7 @@ public class PetrolStation {
             System.out.println("Diesel Price: RM" + fuelAndPetrol[2][0]);
         }
     }
-
+    // parsing JSON data from the api endpoint into a readable data
     private double parseFuelPriceFromJson(String jsonResponse, String fuelType) {
         double fuelPrice = -1; // Default value if not found
         try {
